@@ -4,9 +4,9 @@ namespace maestroerror;
 
 class ImageMe {
 
-    use \maestroerror\Traits\checkSystem;
-    use \maestroerror\Traits\filesProcessing;
-    use \maestroerror\Traits\staticHelpers;
+    use \maestroerror\traits\checkSystem;
+    use \maestroerror\traits\filesProcessing;
+    use \maestroerror\traits\staticHelpers;
 
     // Upload options
     protected string $max_size = '24M';

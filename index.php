@@ -1,5 +1,7 @@
 <?php
-include "includes.php";
+
+require "vendor/autoload.php";
+require "src/ImageMe.php";
 
 use maestroerror\ImageMe;
 
