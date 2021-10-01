@@ -205,11 +205,21 @@ class ImageMe {
       }
     }
 
+    public function optionsFrom($options) {
+      self::$inst->setOptions($options);
+    }
+
     // SHOW 
     public static function SHOW($source) {
       self::$inst = new self();
       if(is_array($source)) { throw new \Exception("Sorry, It can't show multiple images in one"); }
       self::$inst->processSource($source)->show_image(self::$inst->mimeInfo, self::$inst->fullPath);
+    }
+    
+    public static function SHOWSTAT($source, $mimeInfo) {
+      self::$inst = new self();
+      if(is_array($source)) { throw new \Exception("Sorry, It can't show multiple images in one"); }
+      self::$inst->show_image($mimeInfo, $source);
     }
 
     // DOWNLOAD
@@ -223,11 +233,16 @@ class ImageMe {
     protected function processSource($source) {
       if(is_array($source)) {
         // is soruce is $_FILES
-        if(isset($source[0]['tmp_name'])) {
-          $sources = $this->reArrayFiles($source);
+        $firstKey = array_key_first($source);
+        if(isset($source[$firstKey]['tmp_name']) && is_array($source[$firstKey]['tmp_name'])) {
+          foreach ($source as $key => $arr) {
+              $sources[$key] = $this->reArrayFiles($arr);
+          }
+          // $sources = $this->reArrayFiles($source);
         } else {
           $sources = $source;
         }
+        // print_r($_FILES);
         // upload if source is array
         foreach($sources as $source) {
           if(isset($source['tmp_name'])) {
