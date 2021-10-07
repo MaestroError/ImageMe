@@ -83,12 +83,12 @@ class ImageMe {
     
     private static $inst;
 
-    public function __construct($source = false) {
+    public function __construct($source = false, $uploadBulk=true) {
 
         // checking extensions
         $this->checkMachine();
         if($source) {
-          $this->processSource($source);
+          $this->processSource($source, $uploadBulk);
         }
         self::$inst = $this;
         
@@ -230,7 +230,7 @@ class ImageMe {
     }
 
 
-    protected function processSource($source) {
+    protected function processSource($source, $upload = true) {
       if(is_array($source)) {
         // is soruce is $_FILES
         $firstKey = array_key_first($source);
@@ -246,9 +246,17 @@ class ImageMe {
         // upload if source is array
         foreach($sources as $source) {
           if(isset($source['tmp_name'])) {
-            return $this->processSource($source['tmp_name'])->name($source['name'])->uploadFile();
+            $imgs = $this->processSource($source['tmp_name'])->name($source['name']);
+            if($upload) {
+              $imgs->uploadFile();
+            }
+            return $imgs;
           } else {
-            return $this->processSource($source)->uploadFile();
+            $imgs =  $this->processSource($source);
+            if($upload) {
+              $imgs->uploadFile();
+            }
+            return $imgs;
           }
         }
       } else {
@@ -298,7 +306,7 @@ class ImageMe {
       if(!in_array($this->extension, $this->allowed)) { throw new \Exception("File extension ".$this->extension." not allowed"); }
       
       if($this->useMark) {
-        $this->watermark($wOpacity, $wPadding);
+        $this->watermark($this->wOpacity, $this->wPadding);
       }
 
       if($this->scale) {
